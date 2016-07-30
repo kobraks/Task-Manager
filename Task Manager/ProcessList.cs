@@ -11,13 +11,8 @@ namespace Task_Manager
     class ProcessList
     {
         readonly Object locker = new object();
-        List<Task> tasks = new List<Task>();
-
-        public DataTable Table
-        {
-            get;
-            set;
-        }
+        List<Process> list = new List<Process>();
+        List<PerformanceCounter> performanceList = new List<PerformanceCounter>();
 
         public ProcessList()
         {
@@ -27,80 +22,113 @@ namespace Task_Manager
         {
             get
             {
-                return tasks.Count;
+                return list.Count;
             }
         }
 
         public Object[] Add(Process process)
         {
-            tasks.Add(new Task(process));
+            performanceList.Add(new PerformanceCounter("Process", "% Processor Time", process.ProcessName));
+            list.Add(process);
 
             Object[] tmp = new Object[2]
                 {
-                    tasks[tasks.Count - 1].Name,
-                    tasks[tasks.Count - 1].Cpu
+                    process.ProcessName,
+                    Math.Truncate(performanceList[performanceList.Count - 1].NextValue() / Environment.ProcessorCount)
                 };
 
             return tmp;
+
+            /*
+             * list.Add(process);
+            Object []values = new object[2];
+            values[0] = process.ProcessName;
+            var pref = new PerformanceCounter();
+            pref.CategoryName = "Proces";
+            pref.CounterName = "Czas procesora (%)";
+            pref.InstanceName = process.ProcessName;
+            list2.Add(pref);
+             */
         }
 
-        public bool Uniquire(Process process)
+        public void DeleteCancelled(ref DataTable table)
         {
-            Task wonderIfItsPresent = new Task(process);
-
-            return !tasks.Any(item => item.Name == wonderIfItsPresent.Name);
-        }
-
-        int Index = 0;
-
-        public void UpdateNext()
-        {
-            if (Index < tasks.Count && Index >= 0)
+            Debug.WriteLine("Atempt to delete");
+            for (int i = 0; i < list.Count; i++)
             {
                 try
                 {
-                    Table.Rows[Index][1] = tasks[Index].Cpu;
-
-                }
-                catch(Exception)
-                {}
-
-                try
-                {
-                    if (tasks[Index].HasExited)
+                    if (list[i].HasExited)
                     {
-                        tasks[Index] = null;
-                        tasks.RemoveAt(Index);
-                        Table.Rows.RemoveAt(Index);
-                        Index--;
+                        table.Rows.RemoveAt(i);
+                        list.RemoveAt(i);
+                        performanceList.RemoveAt(i);
+                        i--;
                     }
                 }
-                catch(Exception)
-                {}
-
-                Index++;
-            }
-            else
-            {
-                Index = 0;
-            }
-        }
-
-        public void Kill(string pName)
-        {
-            foreach(var task in tasks)
-            {
-                if (String.Compare(task.Name, pName, false) == 0)
+                catch(Exception ext)
                 {
-                    task.Kill();
-                    return;
+                    Debug.WriteLine("Process: " + list[i].ProcessName);
+                    Debug.WriteLine(ext.Message);
                 }
             }
         }
 
-        public void Clear()
+        public void Update(ref DataTable table)
         {
-            tasks.Clear();
+            for (int i =0; i < list.Count; i++)
+            {
+                try
+                {
+                    table.Rows[i][0] = list[i].ProcessName;
+                    table.Rows[i][1] = Math.Truncate(performanceList[i].NextValue() / Environment.ProcessorCount);
+                }
+                catch(Exception ex)
+                {
+                    Debug.WriteLine(list[i].ProcessName);
+                    Debug.WriteLine(ex.Message);
+                }
+            }
+        }
+
+        public void DetectNew(ref DataTable table)
+        {
+            var processes = Process.GetProcesses();
+            if (list.Count >= processes.Length) return;
+
+            List<Process> news = new List<Process>();
+
+            bool newOne = false;
+            bool old = false;
+            foreach (var process in processes)
+            {
+                foreach (var oldProcess in list)
+                {
+                    if (process.ProcessName == oldProcess.ProcessName)
+                    {
+                        old = true;
+                        newOne = false;
+                    }
+                    else if (!old) newOne = true;
+                }
+
+                if (newOne)
+                {
+                    newOne = false;
+                    news.Add(process);
+                }
+            }
+
+            foreach (var process in news)
+            {
+                table.Rows.Add(this.Add(process));
+            }
+        }
+
+        void Clear()
+        {
+            list.Clear();
+            performanceList.Clear();
         }
     }
 }
