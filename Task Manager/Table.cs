@@ -30,9 +30,7 @@ namespace Task_Manager
 
                     update = false;
                 }
-                processList.DeleteCancelled(ref _table);
                 processList.Update(ref _table);
-                processList.DetectNew(ref _table);
             }
         }
 
@@ -64,7 +62,10 @@ namespace Task_Manager
         {
             lock(locker)
             {
-                DTable.Rows.Add(processList.Add(process));
+                if (processList.Uniquire(process))
+                {
+                    DTable.Rows.Add(processList.Add(process));
+                }
             }
         }
 
@@ -77,16 +78,15 @@ namespace Task_Manager
             }
         }
 
-        public void Kill(int pID)
+        public void Kill(string pName)
         {
-
+            processList.Kill(pName);
         }
 
         public void Destroy()
         {
             try
             {
-                Debug.WriteLine("aaa");
                 isRun = false;
                 thread.Abort();
             }

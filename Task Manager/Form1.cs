@@ -19,8 +19,8 @@ namespace Task_Manager
         {
             InitializeComponent();
 
-            dataGridView1.DataSource = table.DTable;
-            dataGridView1.Columns[0].Visible = false;
+            DataGV.DataSource = table.DTable;
+            DataGV.Columns[0].Visible = false;
 
             var processs = Process.GetProcesses();
             
@@ -28,11 +28,6 @@ namespace Task_Manager
             {
                 table.Add(process);
             }
-        }
-
-        private void timer1_Tick(object sender, EventArgs e)
-        {
-            table.Update();
         }
 
         private void Form1_FormClosed(object sender, FormClosedEventArgs e)
@@ -43,6 +38,45 @@ namespace Task_Manager
         private void refreshToolStripMenuItem_Click(object sender, EventArgs e)
         {
             table.Update();
+        }
+
+        Process[] processes = null;
+        int index = 0;
+
+        private void UpdateTimer_Tick(object sender, EventArgs e)
+        {
+            table.Update();
+
+            if (processes == null)
+            {
+                processes = Process.GetProcesses();
+            }
+
+            try
+            {
+                if (index >= 0 && index < processes.Length)
+                {
+                    table.Add(processes[index]);
+                    index++;
+                }
+                else
+                {
+                    index = 0;
+                    processes = null;
+                }
+            }
+            catch (Exception)
+            { }
+        }
+
+        private void killToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            var selected = DataGV.SelectedRows;
+            
+            for(int i = 0; i < selected.Count; i++)
+            {
+                table.Kill((string)selected[i].Cells[0].Value);
+            }
         }
     }
 }
