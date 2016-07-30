@@ -30,9 +30,7 @@ namespace Task_Manager
 
                     update = false;
                 }
-                processList.DeleteCancelled(ref _table);
-                processList.Update(ref _table);
-                processList.DetectNew(ref _table);
+                processList.UpdateNext();
             }
         }
 
@@ -53,7 +51,8 @@ namespace Task_Manager
         {
             DTable.Columns.Add("Process Name", typeof(string));
             DTable.Columns.Add("CPU", typeof(float));
-            DataColumn column = new DataColumn();
+
+            processList.Table = DTable;
 
             thread = new Thread(exec);
             thread.Start();
@@ -62,7 +61,9 @@ namespace Task_Manager
 
         public void Add(Process process)
         {
-            lock(locker)
+            if (!processList.Uniquire(process)) return;
+
+            lock (locker)
             {
                 DTable.Rows.Add(processList.Add(process));
             }
@@ -77,16 +78,15 @@ namespace Task_Manager
             }
         }
 
-        public void Kill(int pID)
+        public void Kill(string pName)
         {
-
+            processList.Kill(pName);
         }
 
         public void Destroy()
         {
             try
             {
-                Debug.WriteLine("aaa");
                 isRun = false;
                 thread.Abort();
             }

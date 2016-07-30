@@ -7,13 +7,13 @@ using System.Security.Cryptography;
 
 namespace Task_Manager
 {
-    class Config
+    public class Config
     {
-        int port = 2555;
+        ushort _port = 2555;
         string _password = "password";
         string _hasedPassword = "";
 
-        string Password
+        public string Password
         {
             get
             {
@@ -24,6 +24,19 @@ namespace Task_Manager
             {
                 _password = value;
                 _hasedPassword = GetMD5Hash(_password);
+            }
+        }
+
+        public ushort Port
+        {
+            get
+            {
+                return _port;
+            }
+
+            set
+            {
+                _port = value;
             }
         }
 
@@ -46,7 +59,7 @@ namespace Task_Manager
 
         public Config()
         {
-
+            Password = "Password";
         }
 
         public void Load()

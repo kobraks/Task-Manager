@@ -30,10 +30,10 @@
         {
             this.label1 = new System.Windows.Forms.Label();
             this.label2 = new System.Windows.Forms.Label();
-            this.textBox1 = new System.Windows.Forms.TextBox();
-            this.textBox2 = new System.Windows.Forms.TextBox();
-            this.button1 = new System.Windows.Forms.Button();
-            this.button2 = new System.Windows.Forms.Button();
+            this.port = new System.Windows.Forms.TextBox();
+            this.password = new System.Windows.Forms.TextBox();
+            this.accept = new System.Windows.Forms.Button();
+            this.cancel = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // label1
@@ -54,53 +54,55 @@
             this.label2.TabIndex = 1;
             this.label2.Text = "Password";
             // 
-            // textBox1
+            // port
             // 
-            this.textBox1.Location = new System.Drawing.Point(101, 34);
-            this.textBox1.MaxLength = 4;
-            this.textBox1.Name = "textBox1";
-            this.textBox1.Size = new System.Drawing.Size(74, 22);
-            this.textBox1.TabIndex = 2;
+            this.port.Location = new System.Drawing.Point(101, 34);
+            this.port.MaxLength = 4;
+            this.port.Name = "port";
+            this.port.Size = new System.Drawing.Size(74, 22);
+            this.port.TabIndex = 2;
             // 
-            // textBox2
+            // password
             // 
-            this.textBox2.Location = new System.Drawing.Point(101, 70);
-            this.textBox2.MaxLength = 100;
-            this.textBox2.Name = "textBox2";
-            this.textBox2.Size = new System.Drawing.Size(100, 22);
-            this.textBox2.TabIndex = 3;
+            this.password.Location = new System.Drawing.Point(101, 70);
+            this.password.MaxLength = 100;
+            this.password.Name = "password";
+            this.password.Size = new System.Drawing.Size(100, 22);
+            this.password.TabIndex = 3;
             // 
-            // button1
+            // accept
             // 
-            this.button1.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-            this.button1.Location = new System.Drawing.Point(29, 125);
-            this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(75, 23);
-            this.button1.TabIndex = 4;
-            this.button1.Text = "Accept";
-            this.button1.UseVisualStyleBackColor = true;
+            this.accept.DialogResult = System.Windows.Forms.DialogResult.Cancel;
+            this.accept.Location = new System.Drawing.Point(29, 125);
+            this.accept.Name = "accept";
+            this.accept.Size = new System.Drawing.Size(75, 23);
+            this.accept.TabIndex = 4;
+            this.accept.Text = "Accept";
+            this.accept.UseVisualStyleBackColor = true;
+            this.accept.Click += new System.EventHandler(this.accept_Click);
             // 
-            // button2
+            // cancel
             // 
-            this.button2.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-            this.button2.Location = new System.Drawing.Point(150, 125);
-            this.button2.Name = "button2";
-            this.button2.Size = new System.Drawing.Size(75, 23);
-            this.button2.TabIndex = 5;
-            this.button2.Text = "Cancel";
-            this.button2.UseVisualStyleBackColor = true;
+            this.cancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
+            this.cancel.Location = new System.Drawing.Point(150, 125);
+            this.cancel.Name = "cancel";
+            this.cancel.Size = new System.Drawing.Size(75, 23);
+            this.cancel.TabIndex = 5;
+            this.cancel.Text = "Cancel";
+            this.cancel.UseVisualStyleBackColor = true;
+            this.cancel.Click += new System.EventHandler(this.cancel_Click);
             // 
             // Form2
             // 
-            this.AcceptButton = this.button1;
+            this.AcceptButton = this.accept;
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.CancelButton = this.button2;
+            this.CancelButton = this.cancel;
             this.ClientSize = new System.Drawing.Size(282, 169);
-            this.Controls.Add(this.button2);
-            this.Controls.Add(this.button1);
-            this.Controls.Add(this.textBox2);
-            this.Controls.Add(this.textBox1);
+            this.Controls.Add(this.cancel);
+            this.Controls.Add(this.accept);
+            this.Controls.Add(this.password);
+            this.Controls.Add(this.port);
             this.Controls.Add(this.label2);
             this.Controls.Add(this.label1);
             this.MaximizeBox = false;
@@ -108,6 +110,7 @@
             this.Name = "Form2";
             this.ShowInTaskbar = false;
             this.Text = "Configuration";
+            this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.Form2_FormClosed);
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -117,9 +120,9 @@
 
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.Label label2;
-        private System.Windows.Forms.TextBox textBox1;
-        private System.Windows.Forms.TextBox textBox2;
-        private System.Windows.Forms.Button button1;
-        private System.Windows.Forms.Button button2;
+        private System.Windows.Forms.TextBox port;
+        private System.Windows.Forms.TextBox password;
+        private System.Windows.Forms.Button accept;
+        private System.Windows.Forms.Button cancel;
     }
 }
